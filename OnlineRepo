@@ -1,0 +1,10 @@
+[
+    {
+        "Name": "神兵3号桶位置",
+        "Guid": "0374b7ed-6f72-4fb7-9c0c-ecb9641a1aed",
+        "Version": "0.0.0.1",
+        "Author": "RedBromine & Baelixac",
+        "DownloadUrl": "https://raw.githubusercontent.com/Baelixac/KodakkuFFXIV/c2e163544944bd44fc96509fdced280776d157fd/weapontong.cs",
+        "UpdateInfo": "绝神兵土神三连桶3号桶位置标记，目前画的是人群击退之后缺口，前面那个石头的位置"
+    },
+]
