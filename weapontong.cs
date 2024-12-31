@@ -1,29 +1,50 @@
 ﻿using System;
+using System.Numerics;
+using System.Runtime.Intrinsics.Arm;
+using Dalamud.Memory.Exceptions;
+using KodakkuAssist.Module.GameEvent;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.CompilerServices;
+using ECommons;
 using Newtonsoft.Json;
 using Dalamud.Utility.Numerics;
 using KodakkuAssist.Data;
+using KodakkuAssist.Data.PartyList;
 using KodakkuAssist.Script;
 using KodakkuAssist.Module.GameEvent;
 using KodakkuAssist.Module.Draw;
+using KodakkuAssist.Module.GameOperate;
 using KodakkuAssist.Module.Draw.Manager;
+using Newtonsoft.Json;
+using System.Security.Cryptography;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+using System.ComponentModel;
+using System.Collections.Generic;
+using System.Collections;
+using System.Threading.Tasks;
 using static Dalamud.Interface.Utility.Raii.ImRaii;
+using Dalamud.Game.ClientState.Objects.Types;
+using ECommons.Reflection;
+
 
 namespace Weapontong;
 
-[ScriptType(guid: "0374b7ed-6f72-4fb7-9c0c-ecb9641a1aed", name: "神兵3号桶位置", territorys: [777], version: "0.0.0.2", author: "RedBromine & Baelixac", note:"绝神兵土神三连桶3号桶位置标记，目前画的是人群击退之后缺口，前面那个石头的位置")]
-
+[ScriptType(guid: "0374b7ed-6f72-4fb7-9c0c-ecb9641a1aed", name: "神兵3号桶位置", territorys: [777], version: "0.0.0.3", author: "RedBromine & Baelixac", note:"绝神兵土神三连桶3号桶位置标记，目前画的是人群击退之后缺口，前面那个石头的位置")]
 public class Weapontong
 {
-    
+    public List<int> playerIndexList = new List<int>();//playerIndexList 三连桶读取玩家名单初始化
+    public List<int> customOrder = new List<int> { 0, 1, 4, 5, 6, 7, 2, 3 };//三连桶顺序 mt st d1234 h12
+    public int bucketcount = 0; //让三连桶事件只触发1次
     public bool sanliantong = true;
-
+    //存所有人ID
+    
     [ScriptMethod(name: "重置战斗检测", eventType: EventTypeEnum.CombatChanged, eventCondition: ["Type:ResetCombat"])]
     public void 重置战斗检测(Event @event, ScriptAccessory accessory)
     {
          sanliantong = true;
+         playerIndexList = new List<int>();//把三连桶存的名字清空
+         bucketcount = 0;//初始化TT石牢计数
     }
 
     [ScriptMethod(name: "P3三连桶A右", eventType: EventTypeEnum.AddCombatant, eventCondition: ["SourcePosition:{\"X\":95.00,\"Y\":0.00,\"Z\":112.00}"])]
@@ -32,6 +53,7 @@ public class Weapontong
         var dp = accessory.Data.GetDefaultDrawProperties();
         if (@event["SourceName"] == "爆破岩石" && sanliantong == true)
         { 
+            
             dp.Name = "3号桶";
             dp.Scale = new(1);
             dp.Delay = 2000;
@@ -156,27 +178,27 @@ public class Weapontong
         }
     }
     
-    //后面可能有些很迷的东西算了能跑就行
-    
-    /*[ScriptMethod(name: "P1寒风之歌", eventType: EventTypeEnum.TargetIcon, eventCondition: ["Id:regex:^(0010)$"])]
-    public void P1寒风之歌(Event @event, ScriptAccessory accessory)
+    [ScriptMethod(name: "P3三连桶点名", eventType: EventTypeEnum.ActionEffect, eventCondition: ["ActionId:regex:^(11116|11115)$"])]
+    public void P3三连桶点名(Event @event, ScriptAccessory accessory)
     {
-        if (!ParseHexId(@event["TargetId"], out var tid)) return;
-        [ScriptMethod(name: "P1美翼寒风之歌", eventType: EventTypeEnum.SetObjPos, eventCondition: ["SourceId:regex:^(40001BA5)$"])]
-        void P1美翼寒风之歌(Event @event, ScriptAccessory accessory)
-        {
-            if (!ParseHexId(@event["SourceId"], out var sid)) return;
-            var dp = accessory.Data.GetDefaultDrawProperties();
-            dp.Name = $"P1寒风之歌";
-            dp.Scale = new(3, 30);
-            dp.Color = accessory.Data.DefaultDangerColor;
-            dp.Owner = sid;
-            dp.TargetObject = tid;
-            dp.DestoryAt = 5000;
-            accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Rect, dp);
-        }
-    }*/
-    //想写整个神兵奈何技术实在GG 先这样吧勉强能用 东扒西扒了一些拼凑
+
+            if (!ParseHexId(@event["TargetId"], out var tid)) return;
+            var playerindex = accessory.Data.PartyList.IndexOf(tid);//获取3个被点人在可达鸭里的队伍位置
+            playerIndexList.Add(playerindex);//把3个人的位置存进playerIndexList
+            bucketcount++;
+            if (bucketcount == 3)//让三连桶事件只触发1次，不然3次石牢事件会触发3次
+            {
+                List<int> finalIndex = playerIndexList.OrderBy(n => customOrder.IndexOf(n)).ToList();//按照mt st d1234 h12的顺序排列
+                var outputindex1 = accessory.Data.PartyList[finalIndex[0]];//确定顺序第1个人的id
+                var outputindex2 = accessory.Data.PartyList[finalIndex[1]];//确定顺序第2个人的id
+                var outputindex3 = accessory.Data.PartyList[finalIndex[2]];//确定顺序第3个人的id
+                //accessory.Method.SendChat($"/e {string.Join(", ", finalIndex)}"); //debug用 测试点名
+                accessory.Method.Mark(outputindex1, MarkType.Attack1, false); //给顺序1的人标1
+                accessory.Method.Mark(outputindex2, MarkType.Attack2, false); //给顺序2的人标2
+                accessory.Method.Mark(outputindex3, MarkType.Attack3, false); //给顺序3的人标3
+            }
+    }
+    
 
     private static bool ParseHexId(string? idStr, out uint id)
     {
