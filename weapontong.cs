@@ -30,7 +30,7 @@ using ECommons.Reflection;
 
 namespace Weapontong;
 
-[ScriptType(guid: "0374b7ed-6f72-4fb7-9c0c-ecb9641a1aed", name: "绝神兵泰坦小工具", territorys: [777], version: "0.0.0.3", author: "RedBromine & Baelixac", note:"神兵泰坦标3号桶位置+头上标点")]
+[ScriptType(guid: "0374b7ed-6f72-4fb7-9c0c-ecb9641a1aed", name: "绝神兵泰坦小工具", territorys: [777], version: "0.0.0.4", author: "RedBromine & Baelixac", note:"神兵泰坦标3号桶位置+头上标点")]
 public class Weapontong
 {
     public List<int> playerIndexList = new List<int>();//playerIndexList 三连桶读取玩家名单初始化
@@ -39,7 +39,7 @@ public class Weapontong
     public bool sanliantong = true;
     //存所有人ID
     
-    [ScriptMethod(name: "重置战斗检测", eventType: EventTypeEnum.CombatChanged, eventCondition: ["Type:ResetCombat"])]
+    [ScriptMethod(name: "重置战斗检测", eventType: EventTypeEnum.CombatChanged, eventCondition: ["Type:ResetCombat"], userControl:false)]
     public void 重置战斗检测(Event @event, ScriptAccessory accessory)
     {
          sanliantong = true;
@@ -47,7 +47,7 @@ public class Weapontong
          bucketcount = 0;//初始化TT石牢计数
     }
 
-    [ScriptMethod(name: "P3三连桶A右", eventType: EventTypeEnum.AddCombatant, eventCondition: ["SourcePosition:{\"X\":95.00,\"Y\":0.00,\"Z\":112.00}"])]
+    [ScriptMethod(name: "P3三连桶A右", eventType: EventTypeEnum.AddCombatant, eventCondition: ["SourcePosition:{\"X\":95.00,\"Y\":0.00,\"Z\":112.00}"], userControl:false)]
     public void P3三连桶A右(Event @event, ScriptAccessory accessory)
     {
         var dp = accessory.Data.GetDefaultDrawProperties();
@@ -65,7 +65,7 @@ public class Weapontong
         }
     }
 
-    [ScriptMethod(name: "P3三连桶A左", eventType: EventTypeEnum.AddCombatant, eventCondition: ["SourcePosition:{\"X\":105.00,\"Y\":0.00,\"Z\":112.00}"])]
+    [ScriptMethod(name: "P3三连桶A左", eventType: EventTypeEnum.AddCombatant, eventCondition: ["SourcePosition:{\"X\":105.00,\"Y\":0.00,\"Z\":112.00}"], userControl:false)]
     public void P3三连桶A左(Event @event, ScriptAccessory accessory)
     {
         var dp = accessory.Data.GetDefaultDrawProperties();
@@ -81,7 +81,7 @@ public class Weapontong
             sanliantong = false;
         }
     }
-    [ScriptMethod(name: "P3三连桶D右", eventType: EventTypeEnum.AddCombatant, eventCondition: ["SourcePosition:{\"X\":112.00,\"Y\":0.00,\"Z\":105.00}"])]
+    [ScriptMethod(name: "P3三连桶D右", eventType: EventTypeEnum.AddCombatant, eventCondition: ["SourcePosition:{\"X\":112.00,\"Y\":0.00,\"Z\":105.00}"], userControl:false)]
     public void P3三连桶D右(Event @event, ScriptAccessory accessory)
     {
         var dp = accessory.Data.GetDefaultDrawProperties();
@@ -97,7 +97,7 @@ public class Weapontong
             sanliantong = false;
         }
     }
-    [ScriptMethod(name: "P3三连桶D左", eventType: EventTypeEnum.AddCombatant, eventCondition: ["SourcePosition:{\"X\":112.00,\"Y\":-0.00,\"Z\":95.00}"])]
+    [ScriptMethod(name: "P3三连桶D左", eventType: EventTypeEnum.AddCombatant, eventCondition: ["SourcePosition:{\"X\":112.00,\"Y\":-0.00,\"Z\":95.00}"], userControl:false)]
     public void P3三连桶D左(Event @event, ScriptAccessory accessory)
     {
         var dp = accessory.Data.GetDefaultDrawProperties();
@@ -113,7 +113,7 @@ public class Weapontong
             sanliantong = false;
         }
     }
-    [ScriptMethod(name: "P3三连桶C左", eventType: EventTypeEnum.AddCombatant, eventCondition: ["SourcePosition:{\"X\":95.00,\"Y\":-0.00,\"Z\":88.00}"])]
+    [ScriptMethod(name: "P3三连桶C左", eventType: EventTypeEnum.AddCombatant, eventCondition: ["SourcePosition:{\"X\":95.00,\"Y\":-0.00,\"Z\":88.00}"], userControl:false)]
     public void P3三连桶C左(Event @event, ScriptAccessory accessory)
     {
         var dp = accessory.Data.GetDefaultDrawProperties();
@@ -129,7 +129,7 @@ public class Weapontong
             sanliantong = false;
         }
     }
-    [ScriptMethod(name: "P3三连桶C右", eventType: EventTypeEnum.AddCombatant, eventCondition: ["SourcePosition:{\"X\":105.00,\"Y\":-0.00,\"Z\":88.00}"])]
+    [ScriptMethod(name: "P3三连桶C右", eventType: EventTypeEnum.AddCombatant, eventCondition: ["SourcePosition:{\"X\":105.00,\"Y\":-0.00,\"Z\":88.00}"], userControl:false)]
     public void P3三连桶C右(Event @event, ScriptAccessory accessory)
     {
         var dp = accessory.Data.GetDefaultDrawProperties();
@@ -145,7 +145,7 @@ public class Weapontong
             sanliantong = false;
         }
     }
-    [ScriptMethod(name: "P3三连桶B右", eventType: EventTypeEnum.AddCombatant, eventCondition: ["SourcePosition:{\"X\":88.00,\"Y\":-0.00,\"Z\":95.00}"])]
+    [ScriptMethod(name: "P3三连桶B右", eventType: EventTypeEnum.AddCombatant, eventCondition: ["SourcePosition:{\"X\":88.00,\"Y\":-0.00,\"Z\":95.00}"], userControl:false)]
     public void P3三连桶B右(Event @event, ScriptAccessory accessory)
     {
         var dp = accessory.Data.GetDefaultDrawProperties();
@@ -161,7 +161,7 @@ public class Weapontong
             sanliantong = false;
         }
     }
-    [ScriptMethod(name: "P3三连桶B左", eventType: EventTypeEnum.AddCombatant, eventCondition: ["SourcePosition:{\"X\":88.00,\"Y\":-0.00,\"Z\":105.00}"])]
+    [ScriptMethod(name: "P3三连桶B左", eventType: EventTypeEnum.AddCombatant, eventCondition: ["SourcePosition:{\"X\":88.00,\"Y\":-0.00,\"Z\":105.00}"], userControl:false)]
     public void P3三连桶B左(Event @event, ScriptAccessory accessory)
     {
         var dp = accessory.Data.GetDefaultDrawProperties();
@@ -178,8 +178,8 @@ public class Weapontong
         }
     }
     
-    [ScriptMethod(name: "P3三连桶点名", eventType: EventTypeEnum.ActionEffect, eventCondition: ["ActionId:regex:^(11116|11115)$"])]
-    public void P3三连桶点名(Event @event, ScriptAccessory accessory)
+    [ScriptMethod(name: "P3三连桶点名头上标点", eventType: EventTypeEnum.ActionEffect, eventCondition: ["ActionId:regex:^(11116|11115)$"])]
+    public void P3三连桶点名头上标点(Event @event, ScriptAccessory accessory)
     {
 
             if (!ParseHexId(@event["TargetId"], out var tid)) return;
