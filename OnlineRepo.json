@@ -5,6 +5,6 @@
         "Version": "0.0.0.5",
         "Author": "RedBromine & Baelixac",
         "DownloadUrl": "https://raw.githubusercontent.com/Baelixac/KodakkuFFXIV/refs/heads/master/weapontong.cs",
-        "UpdateInfo": "新增三连桶测试选项开关，开启时，进入神兵副本后，输入宏进行测试点名：/e 测试三连桶标点鸭鸭"
+        "UpdateInfo": "新增三连桶测试选项开关，绘制1、2桶位置，开启测试开关时，进入神兵副本后，输入宏进行测试点名：/e 测试三连桶标点鸭鸭"
     },
 ]
