@@ -30,7 +30,7 @@ using ECommons.Reflection;
 
 namespace Weapontong;
 
-[ScriptType(guid: "0374b7ed-6f72-4fb7-9c0c-ecb9641a1aed", name: "神兵3号桶位置", territorys: [777], version: "0.0.0.3", author: "RedBromine & Baelixac", note:"神兵泰坦标3号桶位置+头上标点（无需triggernometry）")]
+[ScriptType(guid: "0374b7ed-6f72-4fb7-9c0c-ecb9641a1aed", name: "绝神兵泰坦小工具", territorys: [777], version: "0.0.0.3", author: "RedBromine & Baelixac", note:"神兵泰坦标3号桶位置+头上标点（无需triggernometry）")]
 public class Weapontong
 {
     public List<int> playerIndexList = new List<int>();//playerIndexList 三连桶读取玩家名单初始化
