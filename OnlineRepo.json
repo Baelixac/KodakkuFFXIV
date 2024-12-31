@@ -2,9 +2,9 @@
     {
         "Name": "绝神兵泰坦小工具",
         "Guid": "0374b7ed-6f72-4fb7-9c0c-ecb9641a1aed",
-        "Version": "0.0.0.3",
+        "Version": "0.0.0.4",
         "Author": "RedBromine & Baelixac",
         "DownloadUrl": "https://raw.githubusercontent.com/Baelixac/KodakkuFFXIV/refs/heads/master/weapontong.cs",
-        "UpdateInfo": "神兵泰坦标3号桶位置+头上标点"
+        "UpdateInfo": "把3号桶位置开关选项禁用了，现在仅保留头上标点自定义开关"
     },
 ]
