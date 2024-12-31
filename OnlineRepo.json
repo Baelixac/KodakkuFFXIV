@@ -1,8 +1,8 @@
 [
     {
-        "Name": "神兵3号桶位置",
+        "Name": "绝神兵泰坦小工具",
         "Guid": "0374b7ed-6f72-4fb7-9c0c-ecb9641a1aed",
-        "Version": "0.0.0.2",
+        "Version": "0.0.0.3",
         "Author": "RedBromine & Baelixac",
         "DownloadUrl": "https://raw.githubusercontent.com/Baelixac/KodakkuFFXIV/refs/heads/master/weapontong.cs",
         "UpdateInfo": "绝神兵土神三连桶3号桶位置标记，目前画的是人群击退之后缺口，前面那个石头的位置"
