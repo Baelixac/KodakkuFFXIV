@@ -30,7 +30,9 @@ using ECommons.Reflection;
 
 namespace Weapontong;
 
-[ScriptType(guid: "0374b7ed-6f72-4fb7-9c0c-ecb9641a1aed", name: "绝神兵泰坦小工具", territorys: [777], version: "0.0.0.4", author: "RedBromine & Baelixac", note:"【头上标点功能默认开启！！】神兵泰坦标3号桶位置+头上标点")]
+[ScriptType(guid: "0374b7ed-6f72-4fb7-9c0c-ecb9641a1aed", name: "绝神兵泰坦小工具", territorys: [777], version: "0.0.0.5", author: "RedBromine & Baelixac", note:"神兵泰坦标3号桶位置+头上标点" +
+    "\n 三连桶点名测试请用以下的宏：" +
+    "\n /e 测试三连桶标点鸭鸭")]
 public class Weapontong
 {
     public List<int> playerIndexList = new List<int>();//playerIndexList 三连桶读取玩家名单初始化
@@ -51,6 +53,8 @@ public class Weapontong
     public void P3三连桶A右(Event @event, ScriptAccessory accessory)
     {
         var dp = accessory.Data.GetDefaultDrawProperties();
+        var dp2 = accessory.Data.GetDefaultDrawProperties();
+        var dp3 = accessory.Data.GetDefaultDrawProperties();
         if (@event["SourceName"] == "爆破岩石" && sanliantong == true)
         { 
             
@@ -60,6 +64,23 @@ public class Weapontong
             dp.DestoryAt = 12000;
             dp.Color = new(0.3f, 1.0f, 0f,1.5f);
             dp.Position = new(105, 0, 105);
+            
+            dp2.Name = "2号桶";
+            dp2.Scale = new(1);
+            dp2.Delay = 2000;
+            dp2.DestoryAt = 12000;
+            dp2.Color = new(0.3f, 1.0f, 0f,1.5f);
+            dp2.Position = new(100, 0, 100);
+            
+            dp3.Name = "1号桶";
+            dp3.Scale = new(1);
+            dp3.Delay = 2000;
+            dp3.DestoryAt = 12000;
+            dp3.Color = new(0.3f, 1.0f, 0f,1.5f);
+            dp3.Position = new(100, 0, 94);
+            
+            accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Circle, dp3);
+            accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Circle, dp2);
             accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Circle, dp);
             sanliantong = false;
         }
@@ -69,6 +90,8 @@ public class Weapontong
     public void P3三连桶A左(Event @event, ScriptAccessory accessory)
     {
         var dp = accessory.Data.GetDefaultDrawProperties();
+        var dp2 = accessory.Data.GetDefaultDrawProperties();
+        var dp3 = accessory.Data.GetDefaultDrawProperties();
         if (@event["SourceName"] == "爆破岩石" && sanliantong == true)
         { 
             dp.Name = "3号桶";
@@ -77,6 +100,23 @@ public class Weapontong
             dp.DestoryAt = 12000;
             dp.Color = new(0.3f, 1.0f, 0f,1.5f);
             dp.Position = new(95, 0, 105);
+            
+            dp2.Name = "2号桶";
+            dp2.Scale = new(1);
+            dp2.Delay = 2000;
+            dp2.DestoryAt = 12000;
+            dp2.Color = new(0.3f, 1.0f, 0f,1.5f);
+            dp2.Position = new(100, 0, 100);
+            
+            dp3.Name = "1号桶";
+            dp3.Scale = new(1);
+            dp3.Delay = 2000;
+            dp3.DestoryAt = 12000;
+            dp3.Color = new(0.3f, 1.0f, 0f,1.5f);
+            dp3.Position = new(100, 0, 94);
+            
+            accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Circle, dp3);
+            accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Circle, dp2);
             accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Circle, dp);
             sanliantong = false;
         }
@@ -85,6 +125,8 @@ public class Weapontong
     public void P3三连桶D右(Event @event, ScriptAccessory accessory)
     {
         var dp = accessory.Data.GetDefaultDrawProperties();
+        var dp2 = accessory.Data.GetDefaultDrawProperties();
+        var dp3 = accessory.Data.GetDefaultDrawProperties();
         if (@event["SourceName"] == "爆破岩石" && sanliantong == true)
         { 
             dp.Name = "3号桶";
@@ -93,6 +135,23 @@ public class Weapontong
             dp.DestoryAt = 12000;
             dp.Color = new(0.3f, 1.0f, 0f,1.5f);
             dp.Position = new(105, 0, 95);
+            
+            dp2.Name = "2号桶";
+            dp2.Scale = new(1);
+            dp2.Delay = 2000;
+            dp2.DestoryAt = 12000;
+            dp2.Color = new(0.3f, 1.0f, 0f,1.5f);
+            dp2.Position = new(100, 0, 100);
+            
+            dp3.Name = "1号桶";
+            dp3.Scale = new(1);
+            dp3.Delay = 2000;
+            dp3.DestoryAt = 12000;
+            dp3.Color = new(0.3f, 1.0f, 0f,1.5f);
+            dp3.Position = new(94, 0, 100);
+            
+            accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Circle, dp3);
+            accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Circle, dp2);
             accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Circle, dp);
             sanliantong = false;
         }
@@ -101,6 +160,8 @@ public class Weapontong
     public void P3三连桶D左(Event @event, ScriptAccessory accessory)
     {
         var dp = accessory.Data.GetDefaultDrawProperties();
+        var dp2 = accessory.Data.GetDefaultDrawProperties();
+        var dp3 = accessory.Data.GetDefaultDrawProperties();
         if (@event["SourceName"] == "爆破岩石" && sanliantong == true)
         { 
             dp.Name = "3号桶";
@@ -109,6 +170,23 @@ public class Weapontong
             dp.DestoryAt = 12000;
             dp.Color = new(0.3f, 1.0f, 0f,1.5f);
             dp.Position = new(105, 0, 105);
+            
+            dp2.Name = "2号桶";
+            dp2.Scale = new(1);
+            dp2.Delay = 2000;
+            dp2.DestoryAt = 12000;
+            dp2.Color = new(0.3f, 1.0f, 0f,1.5f);
+            dp2.Position = new(100, 0, 100);
+            
+            dp3.Name = "1号桶";
+            dp3.Scale = new(1);
+            dp3.Delay = 2000;
+            dp3.DestoryAt = 12000;
+            dp3.Color = new(0.3f, 1.0f, 0f,1.5f);
+            dp3.Position = new(94, 0, 100);
+            
+            accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Circle, dp3);
+            accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Circle, dp2);
             accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Circle, dp);
             sanliantong = false;
         }
@@ -117,6 +195,8 @@ public class Weapontong
     public void P3三连桶C左(Event @event, ScriptAccessory accessory)
     {
         var dp = accessory.Data.GetDefaultDrawProperties();
+        var dp2 = accessory.Data.GetDefaultDrawProperties();
+        var dp3 = accessory.Data.GetDefaultDrawProperties();
         if (@event["SourceName"] == "爆破岩石" && sanliantong == true)
         { 
             dp.Name = "3号桶";
@@ -125,6 +205,24 @@ public class Weapontong
             dp.DestoryAt = 12000;
             dp.Color = new(0.3f, 1.0f, 0f,1.5f);
             dp.Position = new(105, 0, 95);
+            
+            dp2.Name = "2号桶";
+            dp2.Scale = new(1);
+            dp2.Delay = 2000;
+            dp2.DestoryAt = 12000;
+            dp2.Color = new(0.3f, 1.0f, 0f,1.5f);
+            dp2.Position = new(100, 0, 100);
+            
+            
+            dp3.Name = "1号桶";
+            dp3.Scale = new(1);
+            dp3.Delay = 2000;
+            dp3.DestoryAt = 12000;
+            dp3.Color = new(0.3f, 1.0f, 0f,1.5f);
+            dp3.Position = new(100, 0, 106);
+            
+            accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Circle, dp3);
+            accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Circle, dp2);
             accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Circle, dp);
             sanliantong = false;
         }
@@ -133,6 +231,8 @@ public class Weapontong
     public void P3三连桶C右(Event @event, ScriptAccessory accessory)
     {
         var dp = accessory.Data.GetDefaultDrawProperties();
+        var dp2 = accessory.Data.GetDefaultDrawProperties();
+        var dp3 = accessory.Data.GetDefaultDrawProperties();
         if (@event["SourceName"] == "爆破岩石" && sanliantong == true)
         { 
             dp.Name = "3号桶";
@@ -141,6 +241,24 @@ public class Weapontong
             dp.DestoryAt = 12000;
             dp.Color = new(0.3f, 1.0f, 0f,1.5f);
             dp.Position = new(95, 0, 95);
+            
+            dp2.Name = "2号桶";
+            dp2.Scale = new(1);
+            dp2.Delay = 2000;
+            dp2.DestoryAt = 12000;
+            dp2.Color = new(0.3f, 1.0f, 0f,1.5f);
+            dp2.Position = new(100, 0, 100);
+            
+            
+            dp3.Name = "1号桶";
+            dp3.Scale = new(1);
+            dp3.Delay = 2000;
+            dp3.DestoryAt = 12000;
+            dp3.Color = new(0.3f, 1.0f, 0f,1.5f);
+            dp3.Position = new(100, 0, 106);
+            
+            accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Circle, dp3);
+            accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Circle, dp2);
             accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Circle, dp);
             sanliantong = false;
         }
@@ -149,6 +267,8 @@ public class Weapontong
     public void P3三连桶B右(Event @event, ScriptAccessory accessory)
     {
         var dp = accessory.Data.GetDefaultDrawProperties();
+        var dp2 = accessory.Data.GetDefaultDrawProperties();
+        var dp3 = accessory.Data.GetDefaultDrawProperties();
         if (@event["SourceName"] == "爆破岩石" && sanliantong == true)
         { 
             dp.Name = "3号桶";
@@ -157,6 +277,24 @@ public class Weapontong
             dp.DestoryAt = 12000;
             dp.Color = new(0.3f, 1.0f, 0f,1.5f);
             dp.Position = new(95, 0, 105);
+            
+            dp2.Name = "2号桶";
+            dp2.Scale = new(1);
+            dp2.Delay = 2000;
+            dp2.DestoryAt = 12000;
+            dp2.Color = new(0.3f, 1.0f, 0f,1.5f);
+            dp2.Position = new(100, 0, 100);
+            
+                        
+            dp3.Name = "1号桶";
+            dp3.Scale = new(1);
+            dp3.Delay = 2000;
+            dp3.DestoryAt = 12000;
+            dp3.Color = new(0.3f, 1.0f, 0f,1.5f);
+            dp3.Position = new(106, 0, 100);
+            
+            accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Circle, dp3);
+            accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Circle, dp2);
             accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Circle, dp);
             sanliantong = false;
         }
@@ -165,6 +303,8 @@ public class Weapontong
     public void P3三连桶B左(Event @event, ScriptAccessory accessory)
     {
         var dp = accessory.Data.GetDefaultDrawProperties();
+        var dp2 = accessory.Data.GetDefaultDrawProperties();
+        var dp3 = accessory.Data.GetDefaultDrawProperties();
         if (@event["SourceName"] == "爆破岩石" && sanliantong == true)
         { 
             dp.Name = "3号桶";
@@ -173,6 +313,23 @@ public class Weapontong
             dp.DestoryAt = 12000;
             dp.Color = new(0.3f, 1.0f, 0f,1.5f);
             dp.Position = new(95, 0, 95);
+            
+            dp2.Name = "2号桶";
+            dp2.Scale = new(1);
+            dp2.Delay = 2000;
+            dp2.DestoryAt = 12000;
+            dp2.Color = new(0.3f, 1.0f, 0f,1.5f);
+            dp2.Position = new(100, 0, 100);
+            
+            dp3.Name = "1号桶";
+            dp3.Scale = new(1);
+            dp3.Delay = 2000;
+            dp3.DestoryAt = 12000;
+            dp3.Color = new(0.3f, 1.0f, 0f,1.5f);
+            dp3.Position = new(106, 0, 100);
+            
+            accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Circle, dp3);
+            accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Circle, dp2);
             accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Circle, dp);
             sanliantong = false;
         }
@@ -189,15 +346,30 @@ public class Weapontong
             if (bucketcount == 3)//让三连桶事件只触发1次，不然3次石牢事件会触发3次
             {
                 List<int> finalIndex = playerIndexList.OrderBy(n => customOrder.IndexOf(n)).ToList();//按照mt st d1234 h12的顺序排列
-                var outputindex1 = accessory.Data.PartyList[finalIndex[0]];//确定顺序第1个人的id
-                var outputindex2 = accessory.Data.PartyList[finalIndex[1]];//确定顺序第2个人的id
-                var outputindex3 = accessory.Data.PartyList[finalIndex[2]];//确定顺序第3个人的id
                 //accessory.Method.SendChat($"/e {string.Join(", ", finalIndex)}"); //debug用 测试点名
-                accessory.Method.Mark(outputindex1, MarkType.Attack1, false); //给顺序1的人标1
-                accessory.Method.Mark(outputindex2, MarkType.Attack2, false); //给顺序2的人标2
-                accessory.Method.Mark(outputindex3, MarkType.Attack3, false); //给顺序3的人标3
+                accessory.Method.Mark(accessory.Data.PartyList[finalIndex[0]], MarkType.Attack1, false); //给顺序1的人标1
+                accessory.Method.Mark(accessory.Data.PartyList[finalIndex[1]], MarkType.Attack2, false); //给顺序2的人标2
+                accessory.Method.Mark(accessory.Data.PartyList[finalIndex[2]], MarkType.Attack3, false); //给顺序3的人标3
             }
     }
+    
+    [ScriptMethod(name: "三连桶标点测试", eventType: EventTypeEnum.Chat, eventCondition: ["Message:regex:^(测试三连桶标点鸭鸭)"])]
+    public void 三连桶标点测试(Event @event, ScriptAccessory accessory)
+    {
+        // 创建一个 Random 实例
+        Random random = new Random();
+        // 生成 1~7 之间的 3 个不重复的随机整数
+        List<int> randomBucket = Enumerable.Range(1, 7) // 生成 1~7 的范围
+            .OrderBy(x => random.Next()) // 随机排序
+            .Take(3) // 取前3个幸运B
+            .ToList(); // 转换为列表
+        List<int> finalIndex = randomBucket.OrderBy(n => customOrder.IndexOf(n)).ToList();//按照mt st d1234 h12的顺序排列
+        accessory.Method.SendChat($"/e 测试：随机点3人 \n 可达鸭小队序列：0，1，4，5，6，7，2，3 \n 对应 MT ST D1 D2 D3 D4 H1 H2 \n 本次测试随机点名序列：{string.Join(", ", finalIndex)}"); //debug用 测试点名
+        accessory.Method.Mark(accessory.Data.PartyList[finalIndex[0]], MarkType.Attack1, false);//给顺序1的人标1
+        accessory.Method.Mark(accessory.Data.PartyList[finalIndex[1]], MarkType.Attack2, false);//给顺序2的人标2
+        accessory.Method.Mark(accessory.Data.PartyList[finalIndex[2]], MarkType.Attack3, false);//给顺序3的人标3
+    }
+    
     
 
     private static bool ParseHexId(string? idStr, out uint id)
