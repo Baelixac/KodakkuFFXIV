@@ -1,10 +1,10 @@
 [
     {
-        "Name": "绝神兵泰坦小工具",
+        "Name": "绝神兵绘图+三连桶小队头上标记",
         "Guid": "0374b7ed-6f72-4fb7-9c0c-ecb9641a1aed",
         "Version": "0.0.0.5",
         "Author": "RedBromine & Baelixac",
         "DownloadUrl": "https://raw.githubusercontent.com/Baelixac/KodakkuFFXIV/refs/heads/master/weapontong.cs",
-        "UpdateInfo": "新增三连桶测试选项开关，绘制1、2桶位置，开启测试开关时，进入神兵副本后，输入宏进行测试点名：/e 测试三连桶标点鸭鸭"
+        "UpdateInfo": "更新到P3"
     },
 ]
