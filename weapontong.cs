@@ -32,7 +32,7 @@ using ECommons.GameFunctions;
 
 namespace Weapontong;
 
-[ScriptType(guid: "0374b7ed-6f72-4fb7-9c0c-ecb9641a1aed", name: "绝神兵基础机制绘制+三连桶小队头顶标点", territorys: [777], version: "0.0.0.8", author: "RedBromine & Baelixac", note:"绝神兵绘图+三连桶小队标点" +
+[ScriptType(guid: "0374b7ed-6f72-4fb7-9c0c-ecb9641a1aed", name: "绝神兵基础机制绘制+三连桶小队头顶标点", territorys: [777], version: "0.0.0.9", author: "RedBromine & Baelixac", note:"绝神兵绘图+三连桶小队标点" +
     "\n 三连桶点名测试请用以下的宏：" +
     "\n /e 测试三连桶标点鸭鸭")]
 public class Weapontong
@@ -133,39 +133,43 @@ public class Weapontong
         }
     }
     
-    [ScriptMethod(name: "获取BOSSID", eventType: EventTypeEnum.AddCombatant, userControl:false)]
-    public void 获取BOSSID(Event @event, ScriptAccessory accessory)
-    {
-
-        if (@event["SourceName"] == "迦楼罗")
+        [ScriptMethod(name: "获取风神ID", eventType: EventTypeEnum.AddCombatant, eventCondition: ["SourceName:regex:^(迦楼罗)$"], userControl:false)]
+        public void 获取风神ID(Event @event, ScriptAccessory accessory)
         {
-            windbossid = @event.SourceId();
+                windbossid = @event.SourceId();
+                //accessory.Method.SendChat($"/e {windbossid}");
         }
-
-        if (@event["SourceName"] == "泰坦")
+        
+        [ScriptMethod(name: "获取泰坦ID", eventType: EventTypeEnum.AddCombatant, eventCondition: ["SourceName:regex:^(泰坦)$"], userControl:false)]
+        public void 获取泰坦ID(Event @event, ScriptAccessory accessory)
         {
-            titanbossid = @event.SourceId();
-        }
-
-        if (@event["SourceName"] == "美翼")
+                titanbossid = @event.SourceId();
+                //accessory.Method.SendChat($"/e {titanbossid}");
+            }
+        [ScriptMethod(name: "获取美翼ID", eventType: EventTypeEnum.AddCombatant, eventCondition: ["SourceName:regex:^(美翼)$"], userControl:false)]
+        public void 获取美翼ID(Event @event, ScriptAccessory accessory)
         {
-            meiyibossid = @event.SourceId();
-        }
-
-        if (@event["SourceName"] == "妙翅")
+                meiyibossid = @event.SourceId();
+                //accessory.Method.SendChat($"/e {meiyibossid}");
+            }
+        [ScriptMethod(name: "获取妙翅ID", eventType: EventTypeEnum.AddCombatant, eventCondition: ["SourceName:regex:^(妙翅)$"], userControl:false)]
+        public void 获取妙翅ID(Event @event, ScriptAccessory accessory)
         {
-            miaochibossid = @event.SourceId();
-        }
-        if (@event["SourceName"] == "究极神兵")
+                miaochibossid = @event.SourceId();
+                //accessory.Method.SendChat($"/e {miaochibossid}");
+            }
+        [ScriptMethod(name: "获取究极神兵ID", eventType: EventTypeEnum.AddCombatant, eventCondition: ["SourceName:regex:^(究极神兵)$"], userControl:false)]
+        public void 获取究极神兵ID(Event @event, ScriptAccessory accessory)
         {
-            shenbingbossid = @event.SourceId();
-        }
+                shenbingbossid = @event.SourceId();
+                //accessory.Method.SendChat($"/e {shenbingbossid}");
+            }
         //if (@event["SourceName"] == "伊弗利特")
         //{
         //    firebossid = @event.SourceId();
         //    return;
         //}
-    }
+    
     
     [ScriptMethod(name: "P1螺旋气流", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^(11091)$"])]
     public void Luoxuanqiliu(Event @event, ScriptAccessory accessory)
