@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Numerics;
 using System.Runtime.Intrinsics.Arm;
 using Dalamud.Memory.Exceptions;
@@ -26,11 +26,13 @@ using System.Threading.Tasks;
 using static Dalamud.Interface.Utility.Raii.ImRaii;
 using Dalamud.Game.ClientState.Objects.Types;
 using ECommons.Reflection;
+using System.Threading;
+using ECommons.GameFunctions;
 
 
 namespace Weapontong;
 
-[ScriptType(guid: "0374b7ed-6f72-4fb7-9c0c-ecb9641a1aed", name: "绝神兵基础机制绘制+三连桶小队头顶标点", territorys: [777], version: "0.0.0.8", author: "RedBromine & Baelixac", note:"绝神兵绘图+三连桶小队标点" +
+[ScriptType(guid: "0374b7ed-6f72-4fb7-9c0c-ecb9641a1aed", name: "绝神兵泰坦小工具", territorys: [777], version: "0.0.0.8", author: "RedBromine & Baelixac", note:"绝神兵绘图+三连桶小队标点（更新到P3）" +
     "\n 三连桶点名测试请用以下的宏：" +
     "\n /e 测试三连桶标点鸭鸭")]
 public class Weapontong
@@ -1451,7 +1453,6 @@ public class Weapontong
     //}
     
     
-
     private static bool ParseHexId(string? idStr, out uint id)
     {
         id = 0;
