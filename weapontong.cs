@@ -30,7 +30,7 @@ using ECommons.Reflection;
 
 namespace Weapontong;
 
-[ScriptType(guid: "0374b7ed-6f72-4fb7-9c0c-ecb9641a1aed", name: "绝神兵泰坦小工具", territorys: [777], version: "0.0.0.7", author: "RedBromine & Baelixac", note:"绝神兵绘图+三连桶小队标点（更新到P3）" +
+[ScriptType(guid: "0374b7ed-6f72-4fb7-9c0c-ecb9641a1aed", name: "绝神兵基础机制绘制+三连桶小队头顶标点", territorys: [777], version: "0.0.0.8", author: "RedBromine & Baelixac", note:"绝神兵绘图+三连桶小队标点" +
     "\n 三连桶点名测试请用以下的宏：" +
     "\n /e 测试三连桶标点鸭鸭")]
 public class Weapontong
@@ -38,13 +38,18 @@ public class Weapontong
     public List<int> playerIndexList = new List<int>();//playerIndexList 三连桶读取玩家名单初始化
     public List<int> customOrder = new List<int> { 0, 1, 4, 5, 6, 7, 2, 3 };//三连桶顺序 mt st d1234 h12
     public List<uint> fengqiangtargetIds = new List<uint>();//分身风枪targetId
+    public List<uint> sanyunfengqiangtargetIds = new List<uint>();//三运分身风枪targetId
     public int bucketcount = 0; //让三连桶事件只触发1次
     public int windcount = 0; //让风枪事件只触发1次
+    public int sanyunwindcount = 0; //让三运风枪事件只触发1次
     public bool sanliantong = true;
     public bool windstart = true;//风神开场风枪
     public bool firestart = true;
     public bool HotWind1 = true;//第一次热风
-    public bool yiyun;//一运是否开始,true为未开始
+    public bool yiyun;//一运是否开始
+    public bool eryun;//二运是否开始
+    public bool sanyun;//三运是否开始
+    public bool sanyundihuo;//三运地火是否开始
     public bool fenshentether = true;//第一次热风
     public uint windbossid;//风神bossid
     public uint titanbossid;//泰坦bossid
@@ -53,6 +58,9 @@ public class Weapontong
     //public uint firebossid;//火神bossid
     public uint shenbingbossid;//神兵bossid
     public bool meiyitethercheck = true;
+    public bool windtethercheck1 = true;
+    public bool windtethercheck3 = true;
+    //public bool windtethercheck2 = false;
     public bool miaochitethercheck = true;
     private List<Vector3> huoshenzhuCoList = new List<Vector3>();//火神柱坐标list
 
@@ -65,6 +73,8 @@ public class Weapontong
     public bool TitanMark { get; set; } = true;
     [UserSetting("三连桶点名测试，使用【/e 测试三连桶标点鸭鸭】进行测试")]
     public bool TitanMarkTest { get; set; } = true;
+    [UserSetting("三运被点地火人头上标锁链")]
+    public bool IfritMark { get; set; } = true;
     
     [ScriptMethod(name: "重置战斗检测", eventType: EventTypeEnum.CombatChanged, eventCondition: ["Type:ResetCombat"], userControl:false)]
     public void 重置战斗检测(Event @event, ScriptAccessory accessory)
@@ -75,13 +85,21 @@ public class Weapontong
         HotWind1 = true;//火神第一次热风
         playerIndexList = new List<int>();//把三连桶存的名字清空
         fengqiangtargetIds = new List<uint>();//分身风枪targetId清空
+        sanyunfengqiangtargetIds = new List<uint>();//三运分身风枪targetId清空
         bucketcount = 0;//初始化TT石牢计数
         windcount = 0;//初始化风枪计数
+        sanyunwindcount = 0;//初始化三运风枪计数
         fenshentether = true;//初始化接线时场地变换
         meiyitethercheck = true;//初始化美翅接线检测
         miaochitethercheck = true;//初始化妙翅接线检测
         huoshenzhuCoList.Clear();//初始化火神柱坐标list
         yiyun = false;
+        eryun = false;
+        sanyun = false;
+        sanyundihuo = false;
+        windtethercheck1 = true;
+        windtethercheck3 = true;
+        //windtethercheck2 = false;
         accessory.Method.RemoveDraw("");//清除所有绘制
 
     }
@@ -171,7 +189,7 @@ public class Weapontong
             if (!ParseHexId(@event["TargetId"], out var tid)) return;
             var dp = accessory.Data.GetDefaultDrawProperties();
             dp.Name = "P1开场风枪";
-            dp.Scale = new(6,40);
+            dp.Scale = new(8,40);
             dp.Color = accessory.Data.DefaultDangerColor.WithW(1);
             dp.Owner = windbossid;
             dp.TargetObject = tid;
@@ -186,6 +204,8 @@ public class Weapontong
     {
         if (windstart == false)
         {
+            lock (fengqiangtargetIds)
+            {
             uint fengqiangid = @event.TargetId(); //获取 targetId 的方法
             fengqiangtargetIds.Add(fengqiangid);
             windcount++;
@@ -203,7 +223,7 @@ public class Weapontong
                 var dp3 = accessory.Data.GetDefaultDrawProperties();
 
                 dp.Name = "P1美翼风枪";
-                dp.Scale = new(6, 40);
+                dp.Scale = new(8, 40);
                 dp.Color = accessory.Data.DefaultDangerColor.WithW(1);
                 dp.Owner = meiyibossid;
                 dp.TargetObject = fengqiangtargetIds[0];
@@ -211,12 +231,12 @@ public class Weapontong
 
 
                 dp2.Name = "P1妙翅风枪";
-                dp2.Scale = new(6, 40);
+                dp2.Scale = new(8, 40);
                 dp2.Color = accessory.Data.DefaultDangerColor.WithW(1);
                 dp2.Owner = miaochibossid;
                 dp2.TargetObject = fengqiangtargetIds[1];
                 dp2.DestoryAt = 5000;
-                
+
                 dp3.Name = "P1风神环形场地";
                 dp3.Delay = 2000;
                 dp3.Scale = new(20);
@@ -225,11 +245,11 @@ public class Weapontong
                 dp3.Color = accessory.Data.DefaultDangerColor.WithW(1);
                 dp3.Position = new(100, 0, 100);
                 dp3.DestoryAt = 4200;
-                
+
                 accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Donut, dp3);
                 accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Rect, dp);
                 accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Rect, dp2);
-
+            }
             }
         }
     }
@@ -499,35 +519,6 @@ public class Weapontong
         }
         
     }
-    /*[ScriptMethod(name: "P2火神十字火", eventType: EventTypeEnum.PlayActionTimeline, eventCondition: ["Id:regex:^(7737)$"])]
-    public void P2火神十字火(Event @event, ScriptAccessory accessory)
-    {
-        if (@event["SourceName"] == "伊弗利特" && firestart == false)
-        {
-            if (!ParseHexId(@event["SourceId"], out var sid)) return;
-            //if (!ParseHexId(@event["TargetId"], out var tid)) return;
-            var dp = accessory.Data.GetDefaultDrawProperties();
-            var dp2 = accessory.Data.GetDefaultDrawProperties();
-            dp.Scale = new(12, 40);
-            dp.Name = "P2火神十字火";
-            dp.Owner = sid;
-            dp.Rotation = @event.SourceRotation();
-            dp.Position = @event.SourcePosition();
-            dp.DestoryAt = 3000;
-            dp.Color = new(1.0f, 1.0f, 1.0f, 0.8f);
-
-            dp2.Scale = new(12, 40);
-            dp2.Name = "P2火神十字火";
-            dp2.Owner = sid;
-            dp2.Rotation = @event.SourceRotation() + float.Pi/2;
-            dp2.Position = @event.SourcePosition();
-            dp2.DestoryAt = 3000;
-            dp2.Color = new(1.0f, 1.0f, 1.0f, 0.8f);
-
-            accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Rect, dp);
-        }
-    }*/
-    
     
     [ScriptMethod(name: "P2火神分摊", eventType: EventTypeEnum.TargetIcon, eventCondition: ["Id:regex:^(0075)$"])]
     public void P2火神分摊(Event @event, ScriptAccessory accessory)
@@ -644,22 +635,6 @@ public class Weapontong
         accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Circle, dp);
     }
     
-    /*[ScriptMethod(name: "P3大地之重", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^(11109)$"])]
-    public void P3大地之重(Event @event, ScriptAccessory accessory)
-    { 
-        if (!ParseHexId(@event["SourceId"], out var sid)) return;
-        //if (!ParseHexId(@event["TargetId"], out var tid)) return;
-        var dp = accessory.Data.GetDefaultDrawProperties();
-        dp.Name = "P3大地之重";
-        dp.Scale = new(6);
-        dp.Color = accessory.Data.DefaultDangerColor.WithW(1);
-        dp.Owner = sid;
-        dp.Position = @event.EffectPosition();
-        //dp.TargetObject = tid;
-        dp.DestoryAt = 3000;
-        accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Circle, dp);
-    }*/
-    
     [ScriptMethod(name: "P3石牢爆炸污泥", eventType: EventTypeEnum.ActionEffect, eventCondition: ["ActionId:regex:^(11114|11118)$"])]
     public void P3石牢爆炸污泥(Event @event, ScriptAccessory accessory)
     { 
@@ -669,7 +644,7 @@ public class Weapontong
         dp.Name = "P3石牢爆炸污泥";
         dp.Delay = 2000;
         dp.Scale = new(6);
-        dp.Color = accessory.Data.DefaultDangerColor.WithW(1);
+        dp.Color = accessory.Data.DefaultDangerColor.WithW(0.7f);
         dp.Owner = tid;
         dp.Position = @event.TargetPosition();
         //dp.TargetObject = tid;
@@ -677,7 +652,7 @@ public class Weapontong
         accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Circle, dp);
     }
     
-    [ScriptMethod(name: "P3地裂", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^(11120|11298)$"])]
+    [ScriptMethod(name: "P3地裂", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^(11120|11298|11134|11135)$"])]
     public void P3地裂(Event @event, ScriptAccessory accessory)
     { 
         if (!ParseHexId(@event["SourceId"], out var sid)) return;
@@ -1124,12 +1099,12 @@ public class Weapontong
         dp.Owner = tid;
         dp.TargetObject = tid;
         dp.DestoryAt = 12000;
-        dp.Color = new(0.9f, 0.6f, 0.3f, 1.0f);
+        dp.Color = new(0.9f, 0.6f, 0.3f, 0.6f);
         accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Circle, dp);
     }
     
-    [ScriptMethod(name: "本体一运", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^(11126)$"])]
-    public void 本体一运(Event @event, ScriptAccessory accessory)
+    [ScriptMethod(name: "本体一运神兵风神", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^(11126)$"])]
+    public void 本体一运神兵风神(Event @event, ScriptAccessory accessory)
     {
         var dp = accessory.Data.GetDefaultDrawProperties();
         dp.Delay = 11000;
@@ -1191,13 +1166,289 @@ public class Weapontong
             
         }
     }
-    
-    /*
-    [ScriptMethod(name: "清除所有画图", eventType: EventTypeEnum.Chat, eventCondition: ["Message:regex:^(Debug清除所有画图)$"], userControl:false)]
-    public void 清除所有画图(Event @event, ScriptAccessory accessory)
+
+    [ScriptMethod(name: "本体二运火神十字", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^(11596)$"])]
+    public void 本体二运火神十字(Event @event, ScriptAccessory accessory)
     {
-        accessory.Method.RemoveDraw("");//清除所有绘制
-    }*/
+        eryun = true;
+        var dp2 = accessory.Data.GetDefaultDrawProperties();
+        dp2.Delay = 29500;
+        dp2.Scale = new(12, 40);
+        dp2.Name = "本体二运火神十字";
+        dp2.Rotation = (float)Math.PI*3/2;;
+        dp2.Position = new(120, 0, 100);
+        dp2.DestoryAt = 3000;
+        dp2.Color = accessory.Data.DefaultDangerColor.WithW(1);
+        accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Rect, dp2);
+            
+        var dp3 = accessory.Data.GetDefaultDrawProperties();
+        dp3.Delay = 29500;
+        dp3.Scale = new(12, 40);
+        dp3.Name = "本体二运火神十字";
+        dp3.Rotation = (float)Math.PI;
+        dp3.Position = new(100, 0, 120);
+        dp3.DestoryAt = 3000;
+        dp3.Color = accessory.Data.DefaultDangerColor.WithW(1);
+        accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Rect, dp3);
+    }
+
+    [ScriptMethod(name: "本体二运风神接线", eventType: EventTypeEnum.Tether)]
+    public void 本体二运风神接线(Event @event, ScriptAccessory accessory)
+    {
+        //accessory.Method.SendChat("/e 123");
+        if (!ParseHexId(@event["SourceId"], out var sid)) return;
+        //if (!ParseHexId(@event["TargetId"], out var tid)) return;
+        if (sid != windbossid) return;
+        
+        var dp = accessory.Data.GetDefaultDrawProperties();
+        dp.Name = "本体二运风神接线";
+        dp.Scale = new(2);
+        dp.ScaleMode |= ScaleMode.YByDistance;
+        dp.Color = accessory.Data.DefaultDangerColor.WithW(1);
+        dp.Owner = windbossid;
+        dp.TargetResolvePattern = PositionResolvePatternEnum.TetherTarget;
+        dp.DestoryAt = 5000;
+
+        var dp2 = accessory.Data.GetDefaultDrawProperties();
+        dp2.Name = "本体二运风神第二次接线";
+        dp2.Scale = new(2);
+        dp2.ScaleMode |= ScaleMode.YByDistance;
+        dp2.Color = accessory.Data.DefaultDangerColor.WithW(1);
+        dp2.Owner = windbossid;
+        dp2.TargetResolvePattern = PositionResolvePatternEnum.TetherTarget;
+        dp2.DestoryAt = 2500;
+        if (windtethercheck1 == true && sanyun == false)
+        {
+            accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Rect, dp);
+            windtethercheck1 = false;
+        }
+        if (windtethercheck1 == false && sanyun == false)
+        {
+            accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Rect, dp2);
+            //windtethercheck2 = false;
+        }
+    }
+
+    [ScriptMethod(name: "本体二运风神台风眼", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^(11090)$"])]
+    public void 本体二运风神台风眼(Event @event, ScriptAccessory accessory)
+    {
+        //accessory.Method.SendChat("/e 123");
+        if (eryun == true)
+        {
+            if (!ParseHexId(@event["SourceId"], out var sid)) return;
+            //if (!ParseHexId(@event["TargetId"], out var tid)) return;
+            var dp = accessory.Data.GetDefaultDrawProperties();
+            dp.Name = "风神台风眼";
+            dp.Scale = new(20);
+            dp.InnerScale = new(11.5f);
+            dp.Radian = float.Pi * 2;
+            dp.Color = accessory.Data.DefaultDangerColor.WithW(1);
+            dp.Position = new(100, 0, 100);
+            dp.DestoryAt = 3000;
+            accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Donut, dp);
+        }
+    }
+    
+    [ScriptMethod(name: "本体三运", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^(11597)$"], userControl:false)]
+    public void 本体三运(Event @event, ScriptAccessory accessory)
+    {
+        sanyun = true;
+        sanyundihuo = true;
+
+        var dp = accessory.Data.GetDefaultDrawProperties();
+        dp.Delay = 15000;
+        dp.Name = "本体三运刚羽圈";
+        dp.Scale = new(20);
+        dp.InnerScale = new(15);
+        dp.Radian = float.Pi * 2;
+        dp.Color = accessory.Data.DefaultDangerColor.WithW(1);
+        dp.Position = new(100, 0, 100);
+        dp.DestoryAt = 23000;
+        accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Donut, dp);
+    }
+    
+    [ScriptMethod(name: "本体三运地火", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:11098"], userControl:false)]
+    public void 本体三运地火(Event @event, ScriptAccessory accessory)
+    {
+        if(!IfritMark) return;
+        if (sanyun == true && sanyundihuo == true)
+        {
+            var pos = JsonConvert.DeserializeObject<Vector3>(@event["EffectPosition"]);
+            var target = FakeParty.Get().MinBy(x => Vector3.Distance(pos, x.Position));
+            List<int> sanyundihuolist = new List<int>();
+            var sanyundihuoid = accessory.Data.PartyList.IndexOf(target.EntityId);
+            sanyundihuolist.Add(sanyundihuoid);
+            //accessory.Method.SendChat($"/e 本次测试随机点名序列：{string.Join(", ", sanyundihuolist)}"); 
+            accessory.Method.Mark(accessory.Data.PartyList[sanyundihuolist[0]], MarkType.Bind1, false);//给顺序1的人标1
+            accessory.Method.Mark(accessory.Data.PartyList[sanyundihuolist[1]], MarkType.Bind2, false);//给顺序2的人标2
+            accessory.Method.Mark(accessory.Data.PartyList[sanyundihuolist[2]], MarkType.Bind3, false);//给顺序3的人标3
+            //accessory.Method.SendChat($"/e 地火目标：{sanyundihuoid}");
+            var timer = new System.Timers.Timer(1000); // 设置延迟时间为 1000 毫秒（1 秒）
+            timer.Elapsed += (sender, e) =>
+            {
+                sanyundihuo = false; // 延迟 1 秒后执行
+                timer.Stop(); // 停止计时器
+                timer.Dispose(); // 释放计时器资源
+            };
+            timer.AutoReset = false; // 设置为只触发一次
+            timer.Start(); // 启动计时器
+        }
+    }
+
+    [ScriptMethod(name: "本体三运魔科学激光1", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^(11141)$"])]
+    public void 本体三运魔科学激光1(Event @event, ScriptAccessory accessory)
+    {
+        if (!ParseHexId(@event["SourceId"], out var sid)) return;
+        var dp = accessory.Data.GetDefaultDrawProperties();
+        dp.Name = "本体三运魔科学激光1";
+        dp.Scale = new(8, 40);
+        dp.Color = accessory.Data.DefaultDangerColor.WithW(2);
+        dp.Owner = sid;
+        dp.Position = @event.SourcePosition();
+        dp.Rotation = @event.SourceRotation()-(float)Math.PI/4;
+        dp.DestoryAt = 3000;
+        accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Rect, dp);
+    }
+    
+    [ScriptMethod(name: "本体三运魔科学激光2", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^(11142)$"])]
+    public void 本体三运魔科学激光2(Event @event, ScriptAccessory accessory)
+    {
+        if (!ParseHexId(@event["SourceId"], out var sid)) return;
+        var dp = accessory.Data.GetDefaultDrawProperties();
+        dp.Name = "本体三运魔科学激光2";
+        dp.Scale = new(8, 40);
+        dp.Color = accessory.Data.DefaultDangerColor.WithW(2);
+        dp.Owner = sid;
+        dp.Position = @event.SourcePosition();
+        dp.Rotation = @event.SourceRotation()+(float)Math.PI/4;
+        dp.DestoryAt = 3000;
+        accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Rect, dp);
+    }
+    
+    [ScriptMethod(name: "本体三运魔科学激光3", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^(11140)$"])]
+    public void 本体三运魔科学激光3(Event @event, ScriptAccessory accessory)
+    {
+        if (!ParseHexId(@event["SourceId"], out var sid)) return;
+        var dp = accessory.Data.GetDefaultDrawProperties();
+        dp.Name = "本体三运魔科学激光2";
+        dp.Scale = new(8, 40);
+        dp.Color = accessory.Data.DefaultDangerColor.WithW(2);
+        dp.Owner = sid;
+        dp.Position = @event.SourcePosition();
+        dp.Rotation = @event.SourceRotation();
+        dp.DestoryAt = 3000;
+        accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Rect, dp);
+    }
+
+    [ScriptMethod(name: "本体三运风枪", eventType: EventTypeEnum.TargetIcon, eventCondition: ["Id:regex:^(0010)$"])]
+    public void 本体三运风枪(Event @event, ScriptAccessory accessory)
+    {
+        if (sanyun == true)
+        {
+            lock (sanyunfengqiangtargetIds)
+            {
+            uint sanyunfengqiangid = @event.TargetId(); //获取 targetId 的方法
+            sanyunfengqiangtargetIds.Add(sanyunfengqiangid);
+            sanyunwindcount++;
+            if (sanyunwindcount == 2) //让风枪事件只触发1次，不然会有2次bug
+            {
+                var dp = accessory.Data.GetDefaultDrawProperties();
+                var dp2 = accessory.Data.GetDefaultDrawProperties();
+
+                dp.Name = "P1美翼风枪";
+                dp.Scale = new(8, 40);
+                dp.Color = accessory.Data.DefaultDangerColor.WithW(0.4f);
+                dp.Owner = meiyibossid;
+                dp.TargetObject = sanyunfengqiangtargetIds[1];
+                dp.DestoryAt = 6000;
+
+
+                dp2.Name = "P1妙翅风枪";
+                dp2.Scale = new(8, 40);
+                dp2.Color = accessory.Data.DefaultDangerColor.WithW(0.4f);
+                dp2.Owner = miaochibossid;
+                dp2.TargetObject = sanyunfengqiangtargetIds[0];
+                dp2.DestoryAt = 6000;
+
+                accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Rect, dp);
+                accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Rect, dp2);
+            }
+            }
+        }
+    }
+    
+    [ScriptMethod(name: "本体三运光柱", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:11139"])]
+    public void 本体三运光柱(Event @event, ScriptAccessory accessory)
+    {
+            var dp = accessory.Data.GetDefaultDrawProperties();
+            var pos = JsonConvert.DeserializeObject<Vector3>(@event["EffectPosition"]);
+            dp.Name = "本体三运光柱";
+            dp.Scale = new Vector2(5);
+            dp.Color = accessory.Data.DefaultDangerColor.WithW(3);
+            dp.DestoryAt = 1000;
+            dp.Position = pos;
+            accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Circle, dp);
+    }
+    
+    [ScriptMethod(name: "本体三运风神接线", eventType: EventTypeEnum.Tether)]
+    public void 本体三运风神接线(Event @event, ScriptAccessory accessory)
+    {
+        if (!sanyun) return;
+        if (!ParseHexId(@event["SourceId"], out var sid)) return;
+        if (sid != windbossid) return;
+        var dp = accessory.Data.GetDefaultDrawProperties();
+        dp.Name = "本体三运风神接线";
+        dp.Scale = new(2);
+        dp.ScaleMode |= ScaleMode.YByDistance;
+        dp.Color = accessory.Data.DefaultDangerColor.WithW(1);
+        dp.Owner = windbossid;
+        dp.TargetResolvePattern = PositionResolvePatternEnum.TetherTarget;
+        dp.DestoryAt = 5000;
+        if (windtethercheck3)
+        {
+            accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Rect, dp);
+            windtethercheck3 = false;
+        }
+    }
+
+    [ScriptMethod(name: "本体三运风神大扇形", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^(11150)$"])]
+    public void 本体三运风神大扇形(Event @event, ScriptAccessory accessory)
+    {
+        if (!sanyun) return;
+        var dp = accessory.Data.GetDefaultDrawProperties();
+        dp.Name = "本体三运风神大扇形";
+        dp.Rotation = @event.SourceRotation();
+        dp.DestoryAt = 3000;
+        dp.Owner = @event.SourceId();
+        dp.Position = @event.EffectPosition();
+        dp.Radian = (float)(2 * Math.PI / 3);
+        dp.Scale = new(22);
+        dp.Color = accessory.Data.DefaultDangerColor.WithW(1);
+        accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Fan, dp);
+    }
+
+    [ScriptMethod(name: "本体三运以太波动", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^(11144)$"])]
+    public void 本体三运以太波动(Event @event, ScriptAccessory accessory)
+    {
+        if (!sanyun) return;
+        var dp = accessory.Data.GetDefaultDrawProperties();
+        if (!ParseHexId(@event["SourceId"], out var sid)) return;
+        dp.Name = "本体三运以太波动";
+        dp.Scale = new(2, 10);
+        dp.Color = accessory.Data.DefaultDangerColor.WithW(3);
+        dp.Owner = accessory.Data.Me;
+        dp.TargetObject = sid;
+        dp.Rotation = float.Pi;
+        dp.DestoryAt = 4000;
+        accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Displacement, dp);
+    }
+    
+    
+    //[ScriptMethod(name: "清除所有画图", eventType: EventTypeEnum.Chat, eventCondition: ["Message:regex:^(Debug清除所有画图)$"], userControl:false)]
+    //public void 清除所有画图(Event @event, ScriptAccessory accessory)
+    //{
+    //    accessory.Method.RemoveDraw("");//清除所有绘制
+    //}
     
     
 
