@@ -2,9 +2,9 @@
     {
         "Name": "绝神兵绘图+三连桶小队头上标记",
         "Guid": "0374b7ed-6f72-4fb7-9c0c-ecb9641a1aed",
-        "Version": "0.0.0.9",
+        "Version": "0.0.0.10",
         "Author": "RedBromine & Baelixac",
         "DownloadUrl": "https://raw.githubusercontent.com/Baelixac/KodakkuFFXIV/refs/heads/master/weapontong.cs",
-        "UpdateInfo": "更新到本体三运，新增三运被点地火人头顶标锁链功能"
+        "UpdateInfo": "更新到本体三运，新增三运被点地火人头顶标锁链功能，校准部分技能范围（与spl保持一致）"
     },
 ]
