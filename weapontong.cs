@@ -32,7 +32,7 @@ using ECommons.GameFunctions;
 
 namespace Weapontong;
 
-[ScriptType(guid: "0374b7ed-6f72-4fb7-9c0c-ecb9641a1aed", name: "绝神兵基础机制绘制+三连桶小队头顶标点", territorys: [777], version: "0.0.0.10", author: "RedBromine & Baelixac", note:"绝神兵绘图+三连桶小队标点" +
+[ScriptType(guid: "0374b7ed-6f72-4fb7-9c0c-ecb9641a1aed", name: "绝神兵基础机制绘制+三连桶小队头顶标点", territorys: [777], version: "0.0.0.11", author: "RedBromine & Baelixac", note:"绝神兵绘图+三连桶小队标点" +
     "\n 三连桶点名测试请用以下的宏：" +
     "\n /e 测试三连桶标点鸭鸭")]
 public class Weapontong
@@ -41,9 +41,11 @@ public class Weapontong
     public List<int> customOrder = new List<int> { 0, 1, 4, 5, 6, 7, 2, 3 };//三连桶顺序 mt st d1234 h12
     public List<uint> fengqiangtargetIds = new List<uint>();//分身风枪targetId
     public List<uint> sanyunfengqiangtargetIds = new List<uint>();//三运分身风枪targetId
-    public int bucketcount = 0; //让三连桶事件只触发1次
+    public List<int> sanyundihuolist = new List<int>();
+    //public int bucketcount = 0; //让三连桶事件只触发1次
     public int windcount = 0; //让风枪事件只触发1次
-    public int sanyunwindcount = 0; //让三运风枪事件只触发1次
+    public int sanyunwindcount = 0;
+    //public int sanyundihuo = 0;//让三运风枪事件只触发1次
     public bool sanliantong = true;
     public bool windstart = true;//风神开场风枪
     public bool firestart = true;
@@ -51,7 +53,7 @@ public class Weapontong
     public bool yiyun;//一运是否开始
     public bool eryun;//二运是否开始
     public bool sanyun;//三运是否开始
-    public bool sanyundihuo;//三运地火是否开始
+    //public int sanyundihuoid;//三运地火
     public bool fenshentether = true;//第一次热风
     public uint windbossid;//风神bossid
     public uint titanbossid;//泰坦bossid
@@ -86,11 +88,13 @@ public class Weapontong
         firestart = true;//火神开场
         HotWind1 = true;//火神第一次热风
         playerIndexList = new List<int>();//把三连桶存的名字清空
+        sanyundihuolist = new List<int>();//把三连桶存的名字清空
         fengqiangtargetIds = new List<uint>();//分身风枪targetId清空
         sanyunfengqiangtargetIds = new List<uint>();//三运分身风枪targetId清空
-        bucketcount = 0;//初始化TT石牢计数
+        //bucketcount = 0;//初始化TT石牢计数
         windcount = 0;//初始化风枪计数
         sanyunwindcount = 0;//初始化三运风枪计数
+        //sanyundihuo = 0;//初始化三运风枪计数
         fenshentether = true;//初始化接线时场地变换
         meiyitethercheck = true;//初始化美翅接线检测
         miaochitethercheck = true;//初始化妙翅接线检测
@@ -98,7 +102,7 @@ public class Weapontong
         yiyun = false;
         eryun = false;
         sanyun = false;
-        sanyundihuo = false;
+        //sanyundihuo = 0;
         windtethercheck1 = true;
         windtethercheck3 = true;
         //windtethercheck2 = false;
@@ -176,17 +180,6 @@ public class Weapontong
             meiyibossid = @event.SourceId();
             //accessory.Method.SendChat($"/e {meiyibossid}");
         }
-        //[ScriptMethod(name: "获取究极神兵ID", eventType: EventTypeEnum.AddCombatant, eventCondition: ["SourceName:regex:^(究极神兵)$"], userControl:false)]
-        //public void 获取究极神兵ID(Event @event, ScriptAccessory accessory)
-        //{
-        //        shenbingbossid = @event.SourceId();
-        //        //accessory.Method.SendChat($"/e {shenbingbossid}");
-        //    }
-        //if (@event["SourceName"] == "伊弗利特")
-        //{
-        //    firebossid = @event.SourceId();
-        //    return;
-        //}
     
     
     [ScriptMethod(name: "P1螺旋气流", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^(11091)$"])]
@@ -286,7 +279,7 @@ public class Weapontong
         dp.DestoryAt = 3000;
         dp.Owner = @event.SourceId();
         dp.Position = @event.EffectPosition();
-        dp.Scale = new(9);
+        dp.Scale = new(8);
         dp.Color = new(1.0f, 1.0f, 1.0f,1.5f);
         accessory.Method.SendDraw(0, DrawTypeEnum.Circle, dp);
     }
@@ -1068,8 +1061,7 @@ public class Weapontong
             if (!ParseHexId(@event["TargetId"], out var tid)) return;
             var playerindex = accessory.Data.PartyList.IndexOf(tid);//获取3个被点人在可达鸭里的队伍位置
             playerIndexList.Add(playerindex);//把3个人的位置存进playerIndexList
-            bucketcount++;
-            if (bucketcount == 3)//让三连桶事件只触发1次，不然3次石牢事件会触发3次
+            if (playerIndexList.Count == 3)//让三连桶事件只触发1次，不然3次石牢事件会触发3次
             {
                 List<int> finalIndex = playerIndexList.OrderBy(n => customOrder.IndexOf(n)).ToList();//按照mt st d1234 h12的顺序排列
                 //accessory.Method.SendChat($"/e {string.Join(", ", finalIndex)}"); //debug用 测试点名
@@ -1278,7 +1270,7 @@ public class Weapontong
     public void 本体三运(Event @event, ScriptAccessory accessory)
     {
         sanyun = true;
-        sanyundihuo = true;
+        //sanyundihuo = 0;
 
         var dp = accessory.Data.GetDefaultDrawProperties();
         dp.Delay = 15000;
@@ -1296,27 +1288,24 @@ public class Weapontong
     public void 本体三运地火(Event @event, ScriptAccessory accessory)
     {
         if(!IfritMark) return;
-        if (sanyun == true && sanyundihuo == true)
+        if (sanyun == true)
         {
-            var pos = JsonConvert.DeserializeObject<Vector3>(@event["EffectPosition"]);
-            var target = FakeParty.Get().MinBy(x => Vector3.Distance(pos, x.Position));
-            List<int> sanyundihuolist = new List<int>();
-            var sanyundihuoid = accessory.Data.PartyList.IndexOf(target.EntityId);
-            sanyundihuolist.Add(sanyundihuoid);
-            //accessory.Method.SendChat($"/e 本次测试随机点名序列：{string.Join(", ", sanyundihuolist)}"); 
-            accessory.Method.Mark(accessory.Data.PartyList[sanyundihuolist[0]], MarkType.Bind1, false);//给顺序1的人标1
-            accessory.Method.Mark(accessory.Data.PartyList[sanyundihuolist[1]], MarkType.Bind2, false);//给顺序2的人标2
-            accessory.Method.Mark(accessory.Data.PartyList[sanyundihuolist[2]], MarkType.Bind3, false);//给顺序3的人标3
-            //accessory.Method.SendChat($"/e 地火目标：{sanyundihuoid}");
-            var timer = new System.Timers.Timer(1000); // 设置延迟时间为 1000 毫秒（1 秒）
-            timer.Elapsed += (sender, e) =>
+            lock (sanyundihuolist)
             {
-                sanyundihuo = false; // 延迟 1 秒后执行
-                timer.Stop(); // 停止计时器
-                timer.Dispose(); // 释放计时器资源
-            };
-            timer.AutoReset = false; // 设置为只触发一次
-            timer.Start(); // 启动计时器
+                var pos = JsonConvert.DeserializeObject<Vector3>(@event["EffectPosition"]);
+                var target = FakeParty.Get().MinBy(x => Vector3.Distance(pos, x.Position));
+                var did = accessory.Data.PartyList.IndexOf(target.EntityId);
+                sanyundihuolist.Add(did);
+                //accessory.Method.SendChat($"/e 地火点名2：{sanyundihuolist.Count}");
+            }
+            if (sanyundihuolist.Count == 3)
+                {
+                    accessory.Method.Mark(accessory.Data.PartyList[sanyundihuolist[0]], MarkType.Bind1, false);//给顺序1的人标1
+                    accessory.Method.Mark(accessory.Data.PartyList[sanyundihuolist[1]], MarkType.Bind2, false);//给顺序2的人标2
+                    accessory.Method.Mark(accessory.Data.PartyList[sanyundihuolist[2]], MarkType.Bind3, false);//给顺序3的人标3
+                    //accessory.Method.SendChat($"/e 地火点名：{string.Join(", ", target)}");
+                }
+            
         }
     }
 
@@ -1468,12 +1457,18 @@ public class Weapontong
         accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Displacement, dp);
     }
     
+    [ScriptMethod(name: "本体三运究极", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^(11147)$"], userControl:false)]
+    public void 本体三运究极(Event @event, ScriptAccessory accessory)
+    {
+        sanyun = false;
+    }
     
-    //[ScriptMethod(name: "清除所有画图", eventType: EventTypeEnum.Chat, eventCondition: ["Message:regex:^(Debug清除所有画图)$"], userControl:false)]
-    //public void 清除所有画图(Event @event, ScriptAccessory accessory)
-    //{
-    //    accessory.Method.RemoveDraw("");//清除所有绘制
-    //}
+    /*
+    [ScriptMethod(name: "清除所有画图", eventType: EventTypeEnum.Chat, eventCondition: ["Message:regex:^(Debug清除所有画图)$"], userControl:false)]
+    public void 清除所有画图(Event @event, ScriptAccessory accessory)
+    {
+        accessory.Method.RemoveDraw("");//清除所有绘制
+    }*/
     
     
     private static bool ParseHexId(string? idStr, out uint id)
