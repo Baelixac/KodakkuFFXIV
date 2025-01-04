@@ -32,7 +32,7 @@ using ECommons.GameFunctions;
 
 namespace Weapontong;
 
-[ScriptType(guid: "0374b7ed-6f72-4fb7-9c0c-ecb9641a1aed", name: "绝神兵基础机制绘制+三连桶小队头顶标点", territorys: [777], version: "0.0.0.11", author: "RedBromine & Baelixac", note:"绝神兵绘图+三连桶小队标点" +
+[ScriptType(guid: "0374b7ed-6f72-4fb7-9c0c-ecb9641a1aed", name: "绝神兵基础机制绘制+三连桶小队头顶标点", territorys: [777], version: "0.0.0.12", author: "RedBromine & Baelixac", note:"绝神兵绘图+三连桶小队标点" +
     "\n 三连桶点名测试请用以下的宏：" +
     "\n /e 测试三连桶标点鸭鸭")]
 public class Weapontong
@@ -171,13 +171,13 @@ public class Weapontong
         [ScriptMethod(name: "获取妙翅ID", eventType: EventTypeEnum.AddCombatant, eventCondition: ["SourceName:regex:^(妙翅)$"], userControl:false)]
         public void 获取妙翅ID(Event @event, ScriptAccessory accessory)
         {
-                miaochibossid = @event.SourceId();
+            miaochibossid = @event.SourceId();
                 //accessory.Method.SendChat($"/e {miaochibossid}");
             }
         [ScriptMethod(name: "获取妙翅ID2", eventType: EventTypeEnum.PlayActionTimeline, eventCondition: ["SourceName:regex:^(妙翅)$"], userControl:false)]
         public void 获取妙翅ID2(Event @event, ScriptAccessory accessory)
         {
-            meiyibossid = @event.SourceId();
+            miaochibossid = @event.SourceId();
             //accessory.Method.SendChat($"/e {meiyibossid}");
         }
     
